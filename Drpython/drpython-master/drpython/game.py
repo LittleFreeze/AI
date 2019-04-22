@@ -6,6 +6,7 @@ import drpython.board
 from drpython.colors import *
 from drpython.board import Board
 from drpython.exceptions import *
+from drpython.marioAi import AiPlayer
 
 FPS = 60
 WINDOW_WIDTH = 400
@@ -24,6 +25,8 @@ class Game(object):
     def __init__(self):
         self._board = Board()
         pygame.init()
+        self._player = AiPlayer()
+        
 
         self._fpsClock = pygame.time.Clock()
         self._display = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 32)
@@ -35,8 +38,9 @@ class Game(object):
 
     def run(self):
         self.board.spawn_brick()
-
+        a,b = self._board.brick.blocks
         while True:
+            self._player.aiMain(a.color, b.color)
             for event in pygame.event.get():
                 self.process_event(event)
 
@@ -53,6 +57,7 @@ class Game(object):
 
             pygame.display.update()
             self.fps_clock.tick(FPS)
+
 
     def update(self, delta):
 
@@ -106,3 +111,7 @@ class Game(object):
     @property
     def fps_clock(self):
         return self._fpsClock
+
+    @property
+    def player(self):
+        return self._player
